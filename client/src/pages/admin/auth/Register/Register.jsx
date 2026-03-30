@@ -4,6 +4,7 @@ import { MailOutlined, EyeInvisibleOutlined, EyeOutlined } from '@ant-design/ico
 import { useTranslation } from 'react-i18next'
 import { useAppContext } from '@/context/AppContext'
 import { ROUTES } from '@/constants/routes'
+import { adminApi } from '@/api'
 import toast from 'react-hot-toast'
 import { assets } from '@/assets/assets'
 import './Register.css'
@@ -12,7 +13,7 @@ const { Header, Footer, Content } = Layout
 const { Title, Text, Link } = Typography
 
 function Register() {
-    const { navigate } = useAppContext()
+    const { navigate, setToken } = useAppContext()
     const [loading, setLoading] = React.useState(false)
     const { t } = useTranslation()
 
@@ -20,10 +21,26 @@ function Register() {
         setLoading(true)
 
         try {
-            toast.info(t('messages.info.registrationComingSoon'))
-            console.log('Register values:', values)
+            if (values.password !== values.repeatPassword) {
+                toast.error(t('validation.passwordsMatch'))
+                return
+            }
+
+            const response = await adminApi.register({
+                email: values.email,
+                password: values.password
+            })
+            
+            if (response.data.success) {
+                setToken(response.data.token)
+                localStorage.setItem('token', response.data.token)
+                toast.success('Registration successful')
+                navigate(ROUTES.ADMIN)
+            } else {
+                toast.error(response.data.message || 'Registration failed')
+            }``
         } catch (error) {
-            toast.error(error.message || t('messages.error.registration'))
+            toast.error(error.response?.data?.message || error.message || t('messages.error.registration'))
         } finally {
             setLoading(false)
         }
@@ -90,7 +107,7 @@ function Register() {
 
                         <Form.Item
                             label={<Text>{t('auth.register.repeatPasswordLabel')}</Text>}
-                            name="confirmPassword"
+                            name="repeatPassword"
                             dependencies={['password']}
                             rules={[
                                 { required: true, message: t('validation.confirmPasswordRequired') },

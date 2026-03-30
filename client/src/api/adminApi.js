@@ -7,6 +7,11 @@ export const adminApi = {
         return await axios.post(API_ENDPOINTS.ADMIN_LOGIN, credentials)
     },
 
+    // Admin register
+    register: async (data) => {
+        return await axios.post(API_ENDPOINTS.ADMIN_REGISTER, data)
+    },
+
     // Get dashboard stats
     getStats: async () => {
         return await axios.get(API_ENDPOINTS.ADMIN_STATS)

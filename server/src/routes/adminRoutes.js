@@ -1,6 +1,7 @@
 import express from 'express'
 import {
     adminLogin,
+    adminRegister,
     approveCommentById,
     unapproveCommentById,
     deleteCommentById,
@@ -13,8 +14,9 @@ import { loginLimiter } from '../middleware/rateLimiter.js'
 
 const adminRouter = express.Router()
 
-// Apply strict rate limiting to login endpoint
+// Apply strict rate limiting to login and register endpoint
 adminRouter.post('/login', loginLimiter, adminLogin)
+adminRouter.post('/register', adminRegister)
 
 // Apply auth middleware to all routes below this point
 adminRouter.use(auth)

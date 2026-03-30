@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
 
     // Admin endpoints
     ADMIN_LOGIN: '/api/admin/login',
+    ADMIN_REGISTER: '/api/admin/register',
     ADMIN_STATS: '/api/admin/stats',
     ADMIN_BLOGS: '/api/admin/blogs',
     ADMIN_COMMENTS: '/api/admin/comments'

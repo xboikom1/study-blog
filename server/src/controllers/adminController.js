@@ -5,6 +5,47 @@ import User from '../models/User.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
 
+export const adminRegister = asyncHandler(async (req, res) => {
+    const { email, password, name } = req.body
+
+    const existingUser = await User.findOne({ email })
+    if (existingUser) {
+        return res.status(400).json({ success: false, message: 'User already exists' })
+    }
+
+    const user = new User({
+        email,
+        password,
+        name: name || 'Admin',
+        role: 'author',
+        isActive: true
+    })
+
+    await user.save()
+
+    const token = jwt.sign(
+        {
+            userId: user._id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+        },
+        process.env.JWT_SECRET || 'secret',
+        { expiresIn: '7d' }
+    )
+
+    res.json({
+        success: true,
+        token,
+        user: {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+        }
+    })
+})
+
 export const adminLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
