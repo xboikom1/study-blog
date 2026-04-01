@@ -1,6 +1,7 @@
 export const ROUTES = {
     HOME: '/',
     BLOG_DETAIL: '/blog/:id',
+    REGISTER: '/register',
     ADMIN: '/admin',
     ADMIN_DASHBOARD: '/admin',
     ADMIN_ADD_BLOG: '/admin/addBlog',

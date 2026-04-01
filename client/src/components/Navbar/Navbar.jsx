@@ -64,7 +64,7 @@ function Navbar() {
         </Button>
         <Button
           type="primary"
-          onClick={() => navigate(authToken ? ROUTES.ADMIN : ROUTES.ADMIN)}
+          onClick={() => navigate(ROUTES.ADMIN)}
           style={{
             borderRadius: token.borderRadius,
             height: token.controlHeightLG,
@@ -76,7 +76,7 @@ function Navbar() {
         </Button>
         {!authToken && (
           <Button
-            onClick={() => navigate(ROUTES.ADMIN)}
+            onClick={() => navigate(ROUTES.REGISTER)}
             style={{
               borderRadius: token.borderRadius,
               height: token.controlHeightLG,

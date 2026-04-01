@@ -122,7 +122,7 @@ export const unpublishBlog = asyncHandler(async (req, res) => {
 export const addComment = asyncHandler(async (req, res) => {
     const { blog, name, content } = req.body
     await Comment.create({ blog, name, content })
-    res.status(201).json({ success: true, message: 'Comment added for review' })
+    res.status(201).json({ success: true, message: 'Comment will be added after approving.' })
 })
 
 export const getBlogComments = asyncHandler(async (req, res) => {
