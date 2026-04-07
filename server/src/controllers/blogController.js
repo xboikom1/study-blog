@@ -5,6 +5,9 @@ import Comment from '../models/Comment.js'
 import main from '../configs/gemini.js'
 import { transformBlogImage, transformBlogsImages } from '../utils/imageUrl.js'
 import { asyncHandler } from '../helpers/asyncHandler.js'
+import { sendError, sendSuccess } from '../helpers/response.js'
+import { ERROR_MESSAGES, HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/messages.js'
+import { buildBlogGenerationPrompt } from '../constants/aiPrompts.js'
 
 // Helper to get image URL from filename (relative path for storage)
 const getImagePath = (filename) => {
@@ -138,8 +141,8 @@ export const getBlogComments = asyncHandler(async (req, res) => {
 export const generateContent = asyncHandler(async (req, res) => {
     const { prompt } = req.body
     if (!prompt || !prompt.trim()) {
-        return res.status(400).json({ success: false, message: 'Prompt is required' })
+        return sendError(res, ERROR_MESSAGES.PROMPT_REQUIRED, HTTP_STATUS.BAD_REQUEST)
     }
-    const content = await main(prompt + ' Generate a blog content for this topic in simple text format')
-    res.json({ success: true, content })
+    const content = await main(buildBlogGenerationPrompt(prompt.trim()))
+    return sendSuccess(res, { content }, SUCCESS_MESSAGES.AI_CONTENT_GENERATED, HTTP_STATUS.OK)
 })

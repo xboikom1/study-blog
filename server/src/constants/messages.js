@@ -2,6 +2,7 @@ export const SUCCESS_MESSAGES = {
     BLOG_ADDED: 'Blog added successfully',
     BLOG_DELETED: 'Blog deleted successfully',
     BLOG_UPDATED: 'Blog status updated',
+    AI_CONTENT_GENERATED: 'Content generated successfully',
     COMMENT_ADDED: 'Comment added for review',
     COMMENT_APPROVED: 'Comment approved successfully',
     COMMENT_DELETED: 'Comment deleted successfully',
@@ -11,6 +12,9 @@ export const SUCCESS_MESSAGES = {
 export const ERROR_MESSAGES = {
     INVALID_CREDENTIALS: 'Invalid credentials',
     MISSING_FIELDS: 'Missing required fields',
+    PROMPT_REQUIRED: 'Prompt is required',
+    AI_NOT_CONFIGURED: 'Gemini API key is not configured',
+    AI_EMPTY_RESPONSE: 'AI returned an empty response',
     BLOG_NOT_FOUND: 'Blog not found',
     COMMENT_NOT_FOUND: 'Comment not found',
     UNAUTHORIZED: 'Unauthorized access',

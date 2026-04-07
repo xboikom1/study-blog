@@ -1,39 +1,25 @@
 import { useAppContext } from '@/context/AppContext.jsx'
 import { useApiMutation } from '../../core'
 import { MESSAGES } from '@/constants/messages.js'
+import toast from 'react-hot-toast'
 
 export function useCreateBlog() {
     const { axios } = useAppContext()
     const { mutate, loading, error } = useApiMutation()
 
     const createBlog = async (blogData, imageFile) => {
-        // Validate inputs before creating FormData
         if (!imageFile || typeof imageFile === 'boolean') {
-            console.error('Invalid image file:', imageFile)
+            toast.error(MESSAGES.ERROR_IMAGE_REQUIRED)
             return {
                 success: false,
-                message: 'Invalid image file'
+                message: MESSAGES.ERROR_IMAGE_REQUIRED
             }
         }
-
-        // Debug: Check what we're about to send
-        console.log('useCreateBlog - blogData:', blogData)
-        console.log('useCreateBlog - imageFile:', {
-            name: imageFile?.name,
-            size: imageFile?.size,
-            type: imageFile?.type,
-            file: imageFile
-        })
 
         const formData = new FormData()
         formData.append('blog', JSON.stringify(blogData))
         formData.append('image', imageFile)
 
-        // Debug: Check FormData contents
-        console.log('FormData entries:')
-        for (let pair of formData.entries()) {
-            console.log(pair[0], ':', pair[1])
-        }
 
         return mutate(
             () => axios.post('/api/blog/add', formData),

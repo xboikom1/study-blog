@@ -16,6 +16,32 @@
     max-width: 600px;
 }
 
+.admin-add-blog-form-wrapper {
+    position: relative;
+    max-width: 600px;
+}
+
+.admin-add-blog-form-wrapper.is-generating {
+    pointer-events: none;
+}
+
+.admin-generating-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ant-margin-sm);
+    background: color-mix(in srgb, var(--ant-color-bg-container) 75%, transparent);
+    border-radius: var(--ant-border-radius-lg);
+}
+
+.admin-generating-text {
+    color: var(--ant-color-text);
+}
+
 .admin-add-blog-form .ant-form-item-label > label {
     color: var(--ant-color-text);
 }

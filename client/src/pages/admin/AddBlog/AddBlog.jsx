@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Form, Input, Select, Upload, Button, Typography, Flex, Space } from 'antd'
+import { Form, Input, Select, Upload, Button, Typography, Flex, Space, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import Quill from 'quill'
@@ -11,7 +11,6 @@ import '../shared/AdminTable.css'
 import './AddBlog.css'
 
 const { Title, Text } = Typography
-const { TextArea } = Input
 
 function AddBlog() {
     const [form] = Form.useForm()
@@ -25,8 +24,20 @@ function AddBlog() {
 
     const { generateContent, isGenerating } = useBlogGenerator()
     const { createBlog, isCreating } = useCreateBlog()
+    const isFormBusy = isCreating || isGenerating
+
+    const validateImageSelected = () => {
+        if (image) {
+            return true
+        }
+
+        toast.error(t('messages.error.blogThumbnail'))
+        return false
+    }
 
     const handleGenerateContent = async () => {
+        if (isFormBusy) return
+
         const title = form.getFieldValue('title')
         if (!title) {
             toast.error(t('messages.error.blogTitle'))
@@ -48,8 +59,7 @@ function AddBlog() {
             return
         }
 
-        if (!image) {
-            toast.error(t('messages.error.blogThumbnail'))
+        if (!validateImageSelected()) {
             return
         }
 
@@ -81,6 +91,10 @@ function AddBlog() {
         }
 
         if (!quillRef.current) return
+
+        if (!validateImageSelected()) {
+            return
+        }
 
         const description = quillRef.current.root.innerHTML || '<p><br></p>'
 
@@ -152,16 +166,25 @@ function AddBlog() {
                 {t('admin.addBlog.title')}
             </Title>
 
-            <Form
-                form={form}
-                layout="vertical"
-                onFinish={onSubmitHandler}
-                initialValues={{ category: DEFAULTS.CATEGORY }}
-                className="admin-add-blog-form"
-            >
-                <Form.Item
-                    label={t('admin.addBlog.uploadThumbnail')}
+            <div className={`admin-add-blog-form-wrapper${isGenerating ? ' is-generating' : ''}`}>
+                {isGenerating ? (
+                    <div className="admin-generating-overlay" role="status" aria-live="polite">
+                        <Spin size="large" />
+                        <Text className="admin-generating-text">{t('admin.addBlog.generating')}</Text>
+                    </div>
+                ) : null}
+
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onSubmitHandler}
+                    initialValues={{ category: DEFAULTS.CATEGORY }}
+                    className="admin-add-blog-form"
+                    disabled={isFormBusy}
                 >
+                    <Form.Item
+                        label={t('admin.addBlog.uploadThumbnail')}
+                    >
                     <Upload {...uploadProps} listType="picture-card" className="admin-upload">
                         {imagePreview ? (
                             <img
@@ -176,80 +199,81 @@ function AddBlog() {
                             </Flex>
                         )}
                     </Upload>
-                </Form.Item>
+                    </Form.Item>
 
-                <Form.Item
-                    label={t('admin.addBlog.titleLabel')}
-                    name="title"
-                    rules={[{ required: true, message: t('validation.titleRequired') }]}
-                >
-                    <Input placeholder={t('admin.addBlog.titlePlaceholder')} />
-                </Form.Item>
+                    <Form.Item
+                        label={t('admin.addBlog.titleLabel')}
+                        name="title"
+                        rules={[{ required: true, message: t('validation.titleRequired') }]}
+                    >
+                        <Input placeholder={t('admin.addBlog.titlePlaceholder')} />
+                    </Form.Item>
 
-                <Form.Item
-                    label={t('admin.addBlog.subtitleLabel')}
-                    name="subTitle"
-                    rules={[{ required: true, message: t('validation.subtitleRequired') }]}
-                >
-                    <Input placeholder={t('admin.addBlog.titlePlaceholder')} />
-                </Form.Item>
+                    <Form.Item
+                        label={t('admin.addBlog.subtitleLabel')}
+                        name="subTitle"
+                        rules={[{ required: true, message: t('validation.subtitleRequired') }]}
+                    >
+                        <Input placeholder={t('admin.addBlog.titlePlaceholder')} />
+                    </Form.Item>
 
-                <Form.Item
-                    label={t('admin.addBlog.categoryLabel')}
-                    name="category"
-                    rules={[{ required: true, message: t('validation.categoryRequired') }]}
-                >
-                    <Select placeholder={t('admin.addBlog.categoryPlaceholder')}>
-                        {BLOG_CATEGORIES.filter(cat => cat !== 'All').map((item) => (
-                            <Select.Option key={item} value={item}>
-                                {item}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                </Form.Item>
+                    <Form.Item
+                        label={t('admin.addBlog.categoryLabel')}
+                        name="category"
+                        rules={[{ required: true, message: t('validation.categoryRequired') }]}
+                    >
+                        <Select placeholder={t('admin.addBlog.categoryPlaceholder')}>
+                            {BLOG_CATEGORIES.filter(cat => cat !== 'All').map((item) => (
+                                <Select.Option key={item} value={item}>
+                                    {item}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
 
-                <Form.Item
-                    label={t('admin.addBlog.bodyLabel')}
-                    required
-                >
-                    <div className="admin-editor-wrapper">
-                        <div
-                            ref={editorRef}
-                            className="admin-editor"
-                        />
-                        <Button
-                            size="small"
-                            onClick={handleGenerateContent}
-                            loading={isGenerating}
-                            disabled={isGenerating || isCreating}
-                            className="admin-editor-ai-button"
-                        >
-                            {t('admin.addBlog.generateAI')}
-                        </Button>
-                    </div>
-                </Form.Item>
+                    <Form.Item
+                        label={t('admin.addBlog.bodyLabel')}
+                        required
+                    >
+                        <div className="admin-editor-wrapper">
+                            <div
+                                ref={editorRef}
+                                className="admin-editor"
+                            />
+                            <Button
+                                size="small"
+                                onClick={handleGenerateContent}
+                                loading={isGenerating}
+                                disabled={isFormBusy}
+                                className="admin-editor-ai-button"
+                            >
+                                {t('admin.addBlog.generateAI')}
+                            </Button>
+                        </div>
+                    </Form.Item>
 
-                <Form.Item className="admin-form-actions-item">
-                    <Space size="middle">
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={isCreating}
-                            disabled={isCreating || isGenerating}
-                        >
-                            {t('admin.addBlog.publishButton')}
-                        </Button>
-                        <Button
-                            onClick={handleSaveDraft}
-                            loading={isCreating}
-                            disabled={isCreating || isGenerating}
-                            className="admin-draft-button"
-                        >
-                            {t('admin.addBlog.saveDraft')}
-                        </Button>
-                    </Space>
-                </Form.Item>
-            </Form>
+                    <Form.Item className="admin-form-actions-item">
+                        <Space size="middle">
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={isCreating}
+                                disabled={isFormBusy}
+                            >
+                                {t('admin.addBlog.publishButton')}
+                            </Button>
+                            <Button
+                                onClick={handleSaveDraft}
+                                loading={isCreating}
+                                disabled={isFormBusy}
+                                className="admin-draft-button"
+                            >
+                                {t('admin.addBlog.saveDraft')}
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Form>
+            </div>
         </Flex>
     )
 }

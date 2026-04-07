@@ -98,6 +98,7 @@
       "categoryPlaceholder": "Select Category",
       "bodyLabel": "Article text",
       "generateAI": "Generate with AI",
+      "generating": "Generating article...",
       "publishButton": "Publish Article",
       "saveDraft": "Save Draft"
     },
@@ -191,7 +192,7 @@
       "registration": "Registration failed",
       "passwordReset": "Password reset failed",
       "blogDescription": "Please add blog description",
-      "blogThumbnail": "Please upload a thumbnail image",
+      "blogThumbnail": "Image is required",
       "blogTitle": "Please enter a title first",
       "blogTitleMin": "Please enter at least a title",
       "invalidEmail": "Please enter a valid email address",

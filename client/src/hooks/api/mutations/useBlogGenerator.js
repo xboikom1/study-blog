@@ -4,6 +4,7 @@ import { useAppContext } from '@/context/AppContext.jsx'
 import { useApiMutation } from '../../core'
 import toast from 'react-hot-toast'
 import { MESSAGES } from '@/constants/messages.js'
+import { API_ENDPOINTS } from '@/constants/apiEndpoints.js'
 
 export function useBlogGenerator() {
     const [generatedContent, setGeneratedContent] = useState(null)
@@ -16,20 +17,15 @@ export function useBlogGenerator() {
             return { success: false, message: 'Title required' }
         }
 
-        const result = await mutate(
-            () => axios.post('/api/blog/generate', { prompt }),
-            {
-                successMessage: 'Content generated successfully!',
-                errorMessage: MESSAGES.ERROR_GENERIC,
-                onSuccess: (data) => {
-                    const parsedContent = parse(data.content)
-                    setGeneratedContent(parsedContent)
-                }
-            }
-        )
+        const result = await mutate(() => axios.post(API_ENDPOINTS.BLOG_GENERATE, { prompt }), {
+            successMessage: 'Content generated successfully!',
+            errorMessage: MESSAGES.ERROR_GENERIC
+        })
 
         if (result.success) {
-            return { success: true, content: generatedContent }
+            const parsedContent = parse(result.data?.content || '')
+            setGeneratedContent(parsedContent)
+            return { success: true, content: parsedContent }
         }
 
         return result

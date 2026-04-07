@@ -14,6 +14,7 @@ export const MESSAGES = {
     ERROR_FETCH_BLOGS: 'Failed to fetch blogs.',
     ERROR_FETCH_BLOG: 'Failed to fetch blog details.',
     ERROR_CREATE_BLOG: 'Failed to create blog.',
+    ERROR_IMAGE_REQUIRED: 'Image is required.',
     ERROR_UPDATE_BLOG: 'Failed to update blog.',
     ERROR_DELETE_BLOG: 'Failed to delete blog.',
     ERROR_FETCH_COMMENTS: 'Failed to fetch comments.',
