@@ -6,7 +6,6 @@
  - **Express 5** backend API (server)
  - **MongoDB** (local or external). For local testing you can start MongoDB in **Docker** (recommended), or connect an existing MongoDB instance (for example using MongoDB Compass)
  - Image uploads (local in development; **Cloudinary** supported for deployment)
- - Optional AI-assisted content via **Google Gemini**
 
  This README gives a high-level overview, main features, and quick local setup. For detailed server and client docs see `server/README.md` and `client/README.md`.
 
@@ -18,7 +17,7 @@
 - Admin panel for creating/updating/deleting posts and moderating comments
 - File uploads for blog images (stored locally or connected to **Cloudinary**)
 - **JWT-based** authentication
-- Optional AI content generation using **Google Gemini**
+- AI content generation using **Google Gemini**
 
  ## Architecture & key technologies
 
