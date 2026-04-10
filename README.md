@@ -1,43 +1,90 @@
-## StudySprint
+ # StudySprint
 
-StudySprint is a simple full‑stack blog used to showcase Cursor's capabilities in web development. It includes a React + Vite client and an Express + MongoDB server, with local file storage for images and Google Gemini for optional AI‑assisted content generation.
+ StudySprint is a production-grade full-stack blog platform implemented as a monorepo. It is built with a modern, maintainable stack and follows common production conventions:
 
----
-### Monorepo Structure
-- [`client/`](client/README.md) — React 19 app (Vite, Ant Design, React Router, Quill editor, Marked, React Hot Toast, i18next, Moment, DOMPurify)
-- [`server/`](server/README.md) — Express 5 API (MongoDB/Mongoose via Docker, JWT auth, Multer, bcryptjs, CORS, Helmet, express-rate-limit, local file storage, Gemini)
+ - **React 19** + **Vite** frontend (client)
+ - **Express 5** backend API (server)
+ - **MongoDB** (local or external). For local testing you can start MongoDB in **Docker** (recommended), or connect an existing MongoDB instance (for example using MongoDB Compass)
+ - Image uploads (local in development; **Cloudinary** supported for deployment)
+ - Optional AI-assisted content via **Google Gemini**
 
-### Design
-For the full feature list and API documentation, see [`server/README.md`](server/README.md).
+ This README gives a high-level overview, main features, and quick local setup. For detailed server and client docs see `server/README.md` and `client/README.md`.
 
-### First Run Order
-1) Start the Server (starts local MongoDB via Docker + seeds data)
-2) Start the Client
+ ---
 
-### Quickstart
-See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for detailed steps. Briefly:
+## Main features
 
-**Server**
-1. Copy `server/.env.example` to `server/.env` (credentials are pre-configured, but you can customize them)
-2. `cd server && npm install`
-3. `npm run setup` (starts local MongoDB in Docker + creates schema + seeds test data)
-4. `npm run server` (starts API on port 5001)
+- Public blog listing and post pages (markdown + sanitized HTML rendering)
+- Admin panel for creating/updating/deleting posts and moderating comments
+- File uploads for blog images (stored locally or connected to **Cloudinary**)
+- **JWT-based** authentication
+- Optional AI content generation using **Google Gemini**
 
-**Client**
-1. Copy `client/.env.example` to `client/.env` (already configured for local development)
-2. `cd client && npm install`
-3. `npm run dev` (starts dev server on port 5173)
+ ## Architecture & key technologies
 
-**Admin Login** (after seeding)
-- Navigate to `http://localhost:5173/admin`
-- Email: `admin@studysprint.com` / Password: `admin123`
+ The repository follows a monorepo layout with two primary workspaces: `/client` (frontend) and `/server` (backend). Below is an explicit list of the technologies used across the project.
 
-### Database
-This project uses a **local MongoDB database** running in Docker (no cloud database needed). The database is automatically set up when you run `npm run setup` in the server directory.
+### Frontend (client):
+   - **React 19**
+   - **Vite** (dev server / build)
+   - **Ant Design** (UI library)
+   - **React Router** (routing)
+   - **Quill** (rich text editor)
+   - **marked** (markdown parsing)
+   - **DOMPurify** (HTML sanitization)
+   - **react-hot-toast** (toasts/notifications)
+   - **i18next** (internationalization)
+   - **moment** (date formatting)
+   - **axios** (HTTP client)
+   - **ESLint**
 
-To view your data:
-- **Mongo Express** (Web UI): `http://localhost:8081` (login with your `MONGODB_USER` / `MONGODB_PASSWORD` from `server/.env`)
-- **MongoDB Compass** (Desktop): Connect using your `MONGODB_URI` from `server/.env` (format: `mongodb://USER:PASSWORD@localhost:27017/DATABASE`)
+### Backend (server):
+   - **Node.js** + **Express 5**
+   - **Mongoose** (MongoDB ODM)
+   - **JSON Web Tokens** (JWT) for authentication
+   - **bcryptjs** (password hashing)
+   - **multer** (file upload handling)
+   - **cloudinary SDK** (for image uploads)
+   - **Google Gemini integration** (AI content generation)
+   - **cors**, **helmet** (security hardening)
+   - **express-rate-limit** (basic rate limiting)
+   - **dotenv** (environment configuration)
 
-### Environment Variables
-See [`server/README.md`](server/README.md) and [`client/README.md`](client/README.md) for complete environment configuration. Server requires database credentials, `JWT_SECRET`, and optionally `GEMINI_API_KEY`. Client only needs `VITE_BASE_URL`.
+### Dev / infra / tooling:
+   - **Docker** & **Docker Compose** (used to run MongoDB locally during development)
+   - **MongoDB** (local Docker or external instance; compatible with MongoDB Compass)
+   - **Mongo Express** (optional web-based MongoDB admin interface)
+   - **Vercel** configuration for deployment
+
+ ## Quick local setup
+
+ 1) Server: install, configure env, setup (starts MongoDB and seeds data)
+
+ ```cmd
+ cd server
+ copy .env.example .env
+ npm install
+ npm run setup
+ npm run dev
+ ```
+
+ Notes:
+ - `npm run setup` uses Docker Compose to start MongoDB and then runs the seeding script. Make sure Docker Desktop is running.
+ - If you want Cloudinary uploads during development, ensure your Cloudinary credentials are set in `server/.env`.
+
+ 2) Client: install and start Vite dev server
+
+ ```cmd
+ cd client
+ copy .env.example .env
+ npm install
+ npm run dev
+ ```
+
+ - The frontend dev server runs by default on `http://localhost:5173` and talks to the server on `http://localhost:5001` (configured via `VITE_BASE_URL`).
+
+ ## Where to get more details
+
+ - Client-specific docs: `client/README.md`
+ - Server-specific docs: `server/README.md`
+ - Agent/developer notes: `AGENTS.md`
