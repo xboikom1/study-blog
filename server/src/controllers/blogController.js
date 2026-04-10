@@ -9,11 +9,6 @@ import { sendError, sendSuccess } from '../helpers/response.js'
 import { ERROR_MESSAGES, HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/messages.js'
 import { buildBlogGenerationPrompt } from '../constants/aiPrompts.js'
 
-// Helper to get image URL from filename (relative path for storage)
-const getImagePath = (filename) => {
-    return `/uploads/blogs/${filename}`
-}
-
 // Helper to delete image file
 const deleteImageFile = (imagePath) => {
     if (!imagePath) return
@@ -42,8 +37,8 @@ export const addBlog = asyncHandler(async (req, res) => {
         return res.status(400).json({ success: false, message: 'Missing required fields' })
     }
 
-    // Get the image path from the uploaded file (stored as relative path)
-    const image = getImagePath(imageFile.filename)
+    // Use Cloudinary URL directly
+    const image = imageFile.path
 
     // Create blog with author information from authenticated user
     const blog = await Blog.create({
