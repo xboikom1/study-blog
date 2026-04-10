@@ -19,6 +19,8 @@ const __dirname = path.dirname(__filename)
 
 const app= express()
 
+app.set('trust proxy', 1)
+
 await connectDB()
 
 // CORS configuration - MUST come before other middlewares

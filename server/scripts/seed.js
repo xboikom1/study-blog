@@ -10,9 +10,17 @@ import dbLogger from '../src/utils/dbLogger.js'
 import { users } from '../fixtures/users.js'
 import { blogs } from '../fixtures/blogs.js'
 import { comments } from '../fixtures/comments.js'
+import { v2 as cloudinary } from 'cloudinary'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 // Paths for seed images
 const seedImagesDir = path.join(__dirname, '../seed-images')
@@ -25,8 +33,8 @@ const ensureUploadsDir = () => {
     }
 }
 
-// Copy seed image and return the new filename
-const copySeedImage = (seedImageName) => {
+// Upload seed image to Cloudinary and return the URL
+const uploadSeedImage = async (seedImageName) => {
     const sourcePath = path.join(seedImagesDir, seedImageName)
 
     if (!fs.existsSync(sourcePath)) {
@@ -34,14 +42,15 @@ const copySeedImage = (seedImageName) => {
         return null
     }
 
-    // Generate unique filename
-    const ext = path.extname(seedImageName)
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`
-    const newFilename = `blog-${uniqueSuffix}${ext}`
-    const destPath = path.join(uploadsDir, newFilename)
-
-    fs.copyFileSync(sourcePath, destPath)
-    return `/uploads/blogs/${newFilename}`
+    try {
+        const result = await cloudinary.uploader.upload(sourcePath, {
+            folder: 'blogs'
+        })
+        return result.secure_url
+    } catch (error) {
+        console.error(`❌ Error uploading image to Cloudinary: ${error.message}`)
+        return null
+    }
 }
 
 // Connect to database
@@ -97,17 +106,17 @@ const seedDatabase = async () => {
         const createdBlogs = []
         const baseDate = new Date()
 
-        console.log('📷 Copying seed images...')
+        console.log('📷 Uploading seed images to Cloudinary...')
 
         for (let i = 0; i < blogs.length; i++) {
             const author = createdUsers[i % createdUsers.length]
             const blogData = blogs[i]
 
-            // Copy seed image and get the new path
-            const imagePath = copySeedImage(blogData.seedImage)
+            // Upload seed image and get the URL
+            const imagePath = await uploadSeedImage(blogData.seedImage)
 
             if (!imagePath) {
-                console.error(`❌ Could not copy image for blog: ${blogData.title}`)
+                console.error(`❌ Could not upload image for blog: ${blogData.title}`)
                 continue
             }
 
