@@ -1,89 +1,92 @@
- # StudySprint
+# StudySprint
 
- StudySprint is a production-grade full-stack blog platform implemented as a monorepo. It is built with a modern, maintainable stack and follows common production conventions:
+StudySprint is a production-grade full-stack blog platform implemented as a monorepo. It is built with a modern, maintainable stack and follows common production conventions:
 
- - **React 19** + **Vite** frontend (client)
- - **Express 5** backend API (server)
- - **MongoDB** (local or external). For local testing you can start MongoDB in **Docker** (recommended), or connect an existing MongoDB instance (for example using MongoDB Compass)
- - Image uploads (local in development; **Cloudinary** supported for deployment)
+- **React 19** + **Vite** frontend (client)
+- **Express 5** backend API (server)
+- **MongoDB** (local or external). For local testing you can start MongoDB in **Docker** (recommended), or connect an existing MongoDB instance (for example using MongoDB Compass)
+- Image uploads (local in development; **Cloudinary** supported for deployment)
 
- This README gives a high-level overview, main features, and quick local setup. For detailed server and client docs see `server/README.md` and `client/README.md`.
+This README gives a high-level overview, main features, and quick local setup. For detailed server and client docs see `server/README.md` and `client/README.md`.
 
- ---
+---
 
-## Main features
+## Main Features
 
-- Public blog listing and post pages (markdown + sanitized HTML rendering)
-- Admin panel for creating/updating/deleting posts and moderating comments
-- File uploads for blog images (stored locally or connected to **Cloudinary**)
-- **JWT-based** authentication
-- AI content generation using **Google Gemini**
+- **Public Blog Platform**: Dynamic blog listing and post pages supporting immersive markdown and sanitized HTML rendering.
+- **Integrated Admin Dashboard**: Dedicated secure panel for creating, updating, or deleting posts and orchestrating comment moderation.
+- **Flexible File Management**: Robust image handling supporting swift local storage in development or scalable **Cloudinary** connections for production.
+- **Secure Authentication**: **JWT-based** authentication to safeguard administrative routes and critical API access.
+- **AI-Powered Workflows**: Intelligent text assistance and content generation capabilities integrated via **Google Gemini**.
 
- ## Architecture & key technologies
+## Architecture & Key Technologies
 
- The repository follows a monorepo layout with two primary workspaces: `/client` (frontend) and `/server` (backend). Below is an explicit list of the technologies used across the project.
+The repository follows a monorepo layout with two primary workspaces: `/client` (frontend) and `/server` (backend). Below is an explicit list of the technologies used across the project.
 
-### Frontend (client):
-   - **React 19**
-   - **Vite** (dev server / build)
-   - **Ant Design** (UI library)
-   - **React Router** (routing)
-   - **Quill** (rich text editor)
-   - **marked** (markdown parsing)
-   - **DOMPurify** (HTML sanitization)
-   - **react-hot-toast** (toasts/notifications)
-   - **i18next** (internationalization)
-   - **moment** (date formatting)
-   - **axios** (HTTP client)
-   - **ESLint**
+### Frontend (Client):
 
-### Backend (server):
-   - **Node.js** + **Express 5**
-   - **Mongoose** (MongoDB ODM)
-   - **JSON Web Tokens** (JWT) for authentication
-   - **bcryptjs** (password hashing)
-   - **multer** (file upload handling)
-   - **cloudinary SDK** (for image uploads)
-   - **Google Gemini integration** (AI content generation)
-   - **cors**, **helmet** (security hardening)
-   - **express-rate-limit** (basic rate limiting)
-   - **dotenv** (environment configuration)
+- **React 19** (component architecture)
+- **Vite** (dev server / optimized build)
+- **Ant Design** (professional UI library)
+- **React Router** (client-side routing)
+- **Quill** (integrated rich text editor)
+- **marked** (markdown parsing)
+- **DOMPurify** (strict HTML sanitization)
+- **react-hot-toast** (toast notifications)
+- **i18next** (internationalization strategy)
+- **moment** (date formatting)
+- **axios** (pre-configured HTTP client)
 
-### Dev / infra / tooling:
-   - **Docker** & **Docker Compose** (used to run MongoDB locally during development)
-   - **MongoDB** (local Docker or external instance; compatible with MongoDB Compass)
-   - **Mongo Express** (optional web-based MongoDB admin interface)
-   - **Vercel** configuration for deployment
+### Backend (Server):
 
- ## Quick local setup
+- **Node.js** + **Express 5** (fast, modern async server framework)
+- **Mongoose** (MongoDB ODM for flexible data modeling)
+- **JSON Web Tokens** (JWT) for secure authentication
+- **bcryptjs** (password hashing)
+- **multer** (multipart file upload handling)
+- **Cloudinary SDK** (for scalable cloud image uploads)
+- **Google Gemini integration** (AI content generation logic)
+- **cors**, **helmet** (security and header hardening)
+- **express-rate-limit** (basic rate limiting for stability)
+- **dotenv** (environment configuration decoupled from code)
 
- 1) Server: install, configure env, setup (starts MongoDB and seeds data)
+### Dev / Infra / Tooling:
 
- ```cmd
- cd server
- copy .env.example .env
- npm install
- npm run setup
- npm run dev
- ```
+- **Docker** & **Docker Compose** (used to run MongoDB locally during development without cloud dependencies)
+- **MongoDB** (local Docker or external cloud instance options)
+- **Mongo Express** (optional web-based MongoDB admin interface)
+- **Vercel** configuration for modern deployment pipelines
 
- Notes:
- - `npm run setup` uses Docker Compose to start MongoDB and then runs the seeding script. Make sure Docker Desktop is running.
- - If you want Cloudinary uploads during development, ensure your Cloudinary credentials are set in `server/.env`.
+## Quick Local Setup
 
- 2) Client: install and start Vite dev server
+1. Server: install, configure env, setup (starts MongoDB and seeds data)
 
- ```cmd
- cd client
- copy .env.example .env
- npm install
- npm run dev
- ```
+   ```cmd
+   cd server
+   copy .env.example .env
+   npm install
+   npm run setup
+   npm run dev
+   ```
 
- - The frontend dev server runs by default on `http://localhost:5173` and talks to the server on `http://localhost:5001` (configured via `VITE_BASE_URL`).
+   Notes:
 
- ## Where to get more details
+   - `npm run setup` uses Docker Compose to start MongoDB and then runs the seeding script. Make sure Docker Desktop is running.
+   - If you want Cloudinary uploads during development, ensure your Cloudinary credentials are set in `server/.env`.
 
- - Client-specific docs: `client/README.md`
- - Server-specific docs: `server/README.md`
- - Agent/developer notes: `AGENTS.md`
+2. Client: install and start Vite dev server
+
+   ```cmd
+   cd client
+   copy .env.example .env
+   npm install
+   npm run dev
+   ```
+
+   - The frontend dev server runs by default on `http://localhost:5173` and talks to the server on `http://localhost:5001` (configured via `VITE_BASE_URL`).
+
+## Where to get more details
+
+- Client-specific docs: `client/README.md`
+- Server-specific docs: `server/README.md`
+- Agent/developer notes: `AGENTS.md`
